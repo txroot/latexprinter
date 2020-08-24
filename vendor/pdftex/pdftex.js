@@ -1,6 +1,6 @@
 var PDFTeX = function(opt_workerPath) {
   if (!opt_workerPath) {
-    opt_workerPath = '/vendor/pdftex/pdftex-worker.js';
+    opt_workerPath = 'vendor/pdftex/pdftex-worker.js';
   }
   var worker = new Worker(opt_workerPath);
   var self = this;

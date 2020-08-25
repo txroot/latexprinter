@@ -309,7 +309,7 @@
           var reader  = new FileReader();
 
           reader.addEventListener("load", function () {
-            preview.src = reader.result;
+            //preview.src = reader.result;
             sendData = reader.result;
           }, false);
 
@@ -341,50 +341,53 @@
           console.log(msg);
         }
 
-      var pdf_dataurl = undefined;
-      var compile = function(source_code) {
-      document.getElementById("output").textContent = "";
-      showLoadingIndicator(true);
-      window.location.href = "#running";
+        var pdf_dataurl = undefined;
+        var compile = function(source_code) {
+        document.getElementById("output").textContent = "";
+        showLoadingIndicator(true);
+        window.location.href = "#running";
 
         //console.log(sendData);
+        var loc = "Page location is " + window.location.href;
+        console.log(loc);
 
-      var pdftex = new PDFTeX();
-      pdftex.set_TOTAL_MEMORY(80*1024*1024).then(function() {
-        pdftex.FS_createLazyFile('/', 'circuit.jpg', sendData, true, true);
-        pdftex.on_stdout = appendOutput;
-        pdftex.on_stderr = appendOutput;
+        var pdftex = new PDFTeX();
+        pdftex.set_TOTAL_MEMORY(80*1024*1024).then(function() {
+          
+          pdftex.FS_createLazyFile('/', 'circuit.jpg', sendData, true, true);
+          pdftex.on_stdout = appendOutput;
+          pdftex.on_stderr = appendOutput;
 
-        console.time("Execution time");
+          console.time("Execution time");
 
-        pdftex.compile(source_code).then(function(pdf_dataurl) {
-          console.timeEnd("Execution time");
+          pdftex.compile(source_code).then(function(pdf_dataurl) {
+            console.timeEnd("Execution time");
 
-          showLoadingIndicator(false);
+            showLoadingIndicator(false);
 
-          if (pdf_dataurl === false)
-            return;
+            if (pdf_dataurl === false)
+              return;
 
-          showOpenButton(true);
-          window.location.href = "#open_pdf";
-          document.getElementById("open_pdf_btn").focus();
+            showOpenButton(true);
+            window.location.href = "#open_pdf";
+            document.getElementById("open_pdf_btn").focus();
+            });
           });
+        }
+
+        document.getElementById("compile").addEventListener("click", function(e) {
+          var source_code = getlatexsample();
+          //var source_code = document.getElementById("input").value;
+          compile(source_code);
         });
-      }
 
-      document.getElementById("compile").addEventListener("click", function(e) {
-        var source_code = getlatexsample();
-        //var source_code = document.getElementById("input").value;
-        compile(source_code);
-      });
+        document.getElementById("open_pdf_btn").addEventListener("click", function(e) {
+          window.open(pdf_dataurl);
+          e.preventDefault();
+        });
 
-      document.getElementById("open_pdf_btn").addEventListener("click", function(e) {
-        window.open(pdf_dataurl);
-        e.preventDefault();
-      });
-
-      var pdftex_preload = new PDFTeX("vendor/pdftex/pdftex-full-worker.js");
-      pdftex_preload = undefined;
+        //var pdftex_preload = new PDFTeX("vendor/pdftex/pdftex-full-worker.js");
+        //pdftex_preload = undefined;
     </script>
   </body>
 </html>

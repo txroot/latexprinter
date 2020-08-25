@@ -1,6 +1,6 @@
 var PDFTeX = function(opt_workerPath) {
   if (!opt_workerPath) {
-    opt_workerPath = 'vendor/pdftex/pdftex-worker.js';
+    opt_workerPath = 'vendor/pdftex/pdftex-full-worker.js';
   }
   var worker = new Worker(opt_workerPath);
   var self = this;
@@ -13,7 +13,6 @@ var PDFTeX = function(opt_workerPath) {
   self.on_stderr = function(msg) {
     console.log(msg);
   }
-
 
   worker.onmessage = function(ev) {
     var data = JSON.parse(ev.data);
@@ -117,6 +116,7 @@ var PDFTeX = function(opt_workerPath) {
   createCommand('FS_createLazyFile'); // parent, name, canRead, canWrite
   createCommand('FS_createLazyFilesFromList'); // parent, list, parent_url, canRead, canWrite
   createCommand('set_TOTAL_MEMORY'); // size
+  createCommand('copy_direct_file'); // file
 
   var curry = function(obj, fn, args) {
     return function() {

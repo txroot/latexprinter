@@ -12,6 +12,9 @@
       <script src="vendor/pdftex/pdftex.js"></script>
       <script src="js/base64data.js"></script>
       <script src="js/latexsample.js"></script>
+      <script src="js/b64-worker-data.js"></script>
+
+      <div id="texbody" style="display:none"></div>
 
       <button id="compile" autofocus>Compile LateX</button>
       <a name="running" id="running" style="display: none">
@@ -352,8 +355,9 @@
         console.log(loc);
 
         var pdftex = new PDFTeX();
+
         pdftex.set_TOTAL_MEMORY(80*1024*1024).then(function() {
-          
+
           pdftex.FS_createLazyFile('/', 'circuit.jpg', sendData, true, true);
           pdftex.on_stdout = appendOutput;
           pdftex.on_stderr = appendOutput;

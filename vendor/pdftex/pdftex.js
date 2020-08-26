@@ -2,6 +2,20 @@ var PDFTeX = function(opt_workerPath) {
   if (!opt_workerPath) {
     opt_workerPath = 'vendor/pdftex/pdftex-full-worker.js';
   }
+/*
+  var workerCodeBox = document.getElementById("texbody");
+  workerCodeBox.innerHTML = atob(getWorkerCode());
+
+  var worker = null, URL = window.URL || (window.webkitURL);
+
+  window.URL = URL;
+
+  var workerData = new Blob([document.getElementById('texbody').textContent], {
+      type: "text/javascript"
+  });
+
+  worker = new Worker(window.URL.createObjectURL(workerData));
+*/
   var worker = new Worker(opt_workerPath);
   var self = this;
   var initialized = false;

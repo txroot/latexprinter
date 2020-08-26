@@ -3,7 +3,6 @@
 \usepackage[latin1]{inputenc}
 \usepackage{amsmath}
 \usepackage{fancyhdr}
-
 \pagestyle{fancy}
 \lhead{\textsc{URIsolve App}}
 \rhead{\textsc{Node Voltage Method (Supernode approach)}}
@@ -13,7 +12,9 @@
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 
-\title{URIsolve APP \\
+\title{
+\raisebox{-.2\height}{\includegraphics[height=1cm, keepaspectratio]{logo}} URIsolve APP \\
+\newline
 \textsc{Node Voltage Method} \\
 \textsc{(Supernode approach)} \\
 Step by Step Solution \\
@@ -24,7 +25,7 @@ Step by Step Solution \\
 \begin{tabular}[t]{c@{\extracolsep{8em}}c}
 Lino Sousa           & Mário Alves          \\
 1140355@isep.ipp.pt  & mjf@isep.ipp.pt      \\
-                     &                      \\
+					 &                      \\
 André Rocha          & Francisco Pereira    \\
 anr@isep.ipp.pt      & fdp@isep.ipp.pt      \\
 \end{tabular}
@@ -40,7 +41,7 @@ anr@isep.ipp.pt      & fdp@isep.ipp.pt      \\
 \vspace{\fill}
 \begin{abstract}
 \centering
-This document provides a step by step solution for the submitted circuit, using the Node Voltage Method (NVM). If possible, It's implemented the Supernode approach to simplify the circuit analysis.
+This document provides a step by step solution for the submitted circuit, using the Node Voltage Method (NVM). If possible, it's implemented the Supernode approach to simplify the circuit analysis.
 \end{abstract}
 \vspace{\fill}
 
@@ -57,8 +58,8 @@ This document provides a step by step solution for the submitted circuit, using 
 
 \begin{figure}[hbt]
 \centering{\includegraphics[height=12cm, keepaspectratio]{circuit}}
-\caption{type your caption}
-\label{give a label if you want to refer to it in the text}
+\caption{Circuit image}
+\label{circuitimage}
 \end{figure}
 
 \section{Circuit Information}
@@ -136,7 +137,7 @@ Not found in this circuit.
 \subsection{General information}
 
 \begin{table}[ht]
-\caption{List of the circuit currents}
+\caption{List of the circuit currents and its properties/components}
 \centering
 \begin{tabular}{cccc}
 \textbf{Reference} & \textbf{Start Node} & \textbf{End Node} & \textbf{Components} \\ \hline
@@ -158,18 +159,62 @@ I15                & T                   & M                 & V11
 \end{tabular}
 \end{table}
 
+\subsection{Equivalent Impedances and Voltages}
+\paragraph{} Branch from A to gnd
+\begin{gather*}
+\begin{cases}
+VeqAgnd =  - V1 - V7 = -11\;V
+\end{cases}
+\end{gather*}
+\par
+
+\paragraph{} Branch from D to T
+\begin{gather*}
+\begin{cases}
+VeqDT =  - V4 - V5 = -8\;V
+\end{cases}
+\end{gather*}
+\par
+
+\paragraph{} Branch from E to T
+\begin{gather*}
+\begin{cases}
+ZeqgndH = R10 + C2  = 50 - 159.155i\;\Omega
+\end{cases}
+\end{gather*}
+\par
+
+\paragraph{} Branch from gnd to H
+\begin{gather*}
+\begin{cases}
+ZeqgndH = C1 + R7  = 5 - 159.155i\;\Omega
+\end{cases}
+\end{gather*}
+\par
+newpage
 \subsection{Equations}
 Equations using the Kirchhoff Nodes Law (KNL)
 
 \subsubsection{Node SNf1}
-  \begin{equation}
-    I01+I09+I10+I12=I02+I03
-  \end{equation}
+\begin{figure}[hbt]
+\centering{\includegraphics[height=4cm, keepaspectratio]{snf1}}
+\caption{Node SNf1 currents}
+\label{snf1currents}
+\end{figure}
+\begin{equation}
+  I01+I09+I10+I12=I02+I03
+\end{equation}
 
-\subsubsection{Node SNf1}
-  \begin{equation}
-    I09+I10+I12=0
-  \end{equation}
+\subsubsection{Node SNf2}
+\begin{figure}[hbt]
+\centering{\includegraphics[height=4cm, keepaspectratio]{snf2}}
+\caption{Node SNf2 currents}
+
+\label{snf2currents}
+\end{figure}
+\begin{equation}
+  I09+I10+I12=0
+\end{equation}
 
 \newpage
 \section{Equation System}
@@ -240,7 +285,7 @@ Use these expressions to perform the substitution in the equation system.
 \end{gather*}
 \begin{footnotesize}
 \textbf{\textit{Note:}} \\
- Currents were obtained by an existing current source in their branch.
+Currents were obtained by an existing current source in their branch.
 \end{footnotesize}
 
 \begin{gather*}
@@ -248,7 +293,7 @@ Use these expressions to perform the substitution in the equation system.
 \end{gather*}
 \begin{footnotesize}
 \textbf{\textit{Note:}} \\
- Currents were obtained by their Ohm's Law equation.
+Currents were obtained by their Ohm's Law equation.
 \end{footnotesize}
 
 \begin{gather*}
@@ -256,7 +301,7 @@ Use these expressions to perform the substitution in the equation system.
 \end{gather*}
 \begin{footnotesize}
 \textbf{\textit{Note:}} \\
- Currents were obtained by their KNL equation, since they belong to branches with isolated voltage sources.
+Currents were obtained by their KNL equation, since they belong to branches with isolated voltage sources.
 \end{footnotesize}
 
 \end{document}

@@ -4,305 +4,91 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel='icon' href='img/favicon.ico' type='image/x-icon' sizes="16x16" />
+    <title>Simple Latex Printer</title>
+
+    <link href="css/bootstrap.css" rel="stylesheet" media="all">
+    <link href="css/main.css" rel="stylesheet" media="all">
+
+    <script src="js/jquery.min.js"></script>
 
   </head>
 
   <body>
+
+    <div class="page-wrapper bg-gra-02 p-t-130 p-b-100 font-poppins">
+      <div class="wrapper wrapper--w960">
+          <div class="card card-4">
+              <div class="card-body">
+                  <h2 class="title">Latex Printer</h2>
+
+                      <div class="row row-space">
+                        <button id="compile" class="btn btn--red btn--radius">Print </button>                
+                        <div class="tab" id="tab_open_pdf" style="display: none">
+                          <h4>Compiled PDF</h4>
+                          <br>
+                          <a id='pdf-file-link' download='compiled_latex.pdf' style="display:none;"></a>
+                          <button class="btn btn--gray btn--radius" id="open_pdf_btn">Download PDF</button>
+                        </div>
+                      </div>
+
+                      <a name="running" id="running" style="display: none">
+                        Compiling…
+                        <img src="img/loading.gif" />
+                      </a>
+
+                      <br>
+
+                      <div class="row row-space">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text input--style-4">Latex Code</span>
+                          </div>
+                          <textarea class="form-control" id="latex-code" aria-label="Latex content"></textarea>
+                        </div>
+                      </div>
+
+                      <div class="row row-space">
+                        <h5>Load circuit image (Optional)</h5>
+                        <br>
+                        <input type="file" id="files" />
+                      </div>
+
+                      <br>
+
+                      <div class="row row-space">
+                        <div id="output" style="background-color:#ffffff; color:#c1c1c1;border-style: dotted; padding: 25px 25px 25px 25px; display:none;"></div>
+                      </div>
+
+              </div>
+          </div>
+      </div>
+  </div>
+
+
+
+      <script src="js/popper.min.js"></script>
+      <script src="js/bootstrap.min.js"></script>
+      <script src="js/jquery.easing.min.js"></script>
+
       <script src="vendor/promisejs/promise.js"></script>
       <script src="vendor/pdftex/pdftex.js"></script>
       <script src="js/base64data.js"></script>
       <script src="js/latexsample.js"></script>
       <script src="js/b64-worker-data.js"></script>
 
-      <div id="texbody" style="display:none"></div>
-
-      <button id="compile" autofocus>Compile LateX</button>
-      <a name="running" id="running" style="display: none">
-        Compiling…
-        <img src="img/loading.gif" />
-      </a>
-
-      <div class="tab" id="tab_open_pdf" style="display: none">
-        <h3>View PDF</h3>
-        <button id="open_pdf_btn">Open PDF</button>
-      </div>
-
-      <input type="file" id="files" />
-      <div id="output"></div>
-
-      <textarea rows="30" id="input">
-          \documentclass[a4paper]{article}
-          \usepackage{graphicx}
-          \usepackage[latin1]{inputenc}
-          \usepackage{amsmath}
-          \usepackage{fancyhdr}
-
-          \pagestyle{fancy}
-          \lhead{\textsc{URIsolve App}}
-          \rhead{\textsc{Node Voltage Method (Supernode approach)}}
-          \cfoot{www.isep.ipp.pt}
-          \lfoot{DEE - ISEP}
-          \rfoot {\thepage}
-          \renewcommand{\headrulewidth}{0.4pt}
-          \renewcommand{\footrulewidth}{0.4pt}
-
-          \title{URIsolve APP \\
-          \textsc{Node Voltage Method} \\
-          \textsc{(Supernode approach)} \\
-          Step by Step Solution \\
-          \vspace*{1\baselineskip}
-          }
-
-          \author{
-          \begin{tabular}[t]{c@{\extracolsep{8em}}c}
-          Lino Sousa           & Mário Alves          \\
-          1140355@isep.ipp.pt  & mjf@isep.ipp.pt      \\
-                              &                      \\
-          André Rocha          & Francisco Pereira    \\
-          anr@isep.ipp.pt      & fdp@isep.ipp.pt      \\
-          \end{tabular}
-          }
-
-          \date{}
-
-          \begin{document}
-
-          \maketitle
-          \thispagestyle{empty}
-
-          \vspace{\fill}
-          \begin{abstract}
-          \centering
-          This document provides a step by step solution for the submitted circuit, using the Node Voltage Method (NVM). If possible, It's implemented the Supernode approach to simplify the circuit analysis.
-          \end{abstract}
-          \vspace{\fill}
-
-          \begin{center}
-          \today
-          \end{center}
-
-          \clearpage
-          \pagenumbering{arabic}
-
-          \newpage
-
-          \section{Circuit Image}
-
-          \begin{figure}[hbt]
-          \centering{\includegraphics[height=12cm, keepaspectratio]{circuit}}
-          \caption{Circuit image}
-          \label{circuitimage}
-          \end{figure}
-
-          \section{Circuit Information}
-
-          \begin{table}[h!]
-          \centering
-          \begin{tabular}{clclclc}
-          \textbf{Frequency {[}F{]}} &  & \textbf{Current Sources {[}I{]}} &  & \textbf{Ammeters {[}A{]}} &  & \textbf{Simulation {[}AC/DC{]}} \\
-          F=1GHz                     &  & I=1                              &  & 15/15                     &  & AC
-          \end{tabular}
-          \end{table}
-
-          \section{Fundamental Variables}
-
-          \begin{table}[hbt!]
-          \centering
-          \begin{tabular}{clclclc}
-          \textbf{Branches {[}R{]}} &  & \textbf{Nodes {[}N{]}} &  & \textbf{Isolated Voltage Sources {[}T{]}} &  & \textbf{Equations {[}E{]}} \\
-          R=15                      &  & N=9                    &  & T=6                                       &  & E=N-T-1=2
-          \end{tabular}
-          \end{table}
-
-          \section{Supernodes}
-
-          \subsection{Floating}
-
-          \subsubsection{SNf1}
-
-
-          \paragraph{} Formed by Nodes: {A, B, E, J, H, D}
-          \par
-
-          \paragraph{} Equations:
-
-          \begin{gather*}
-          \begin{cases}
-          V_{B} = \mathrm{V_{A}}-5\\V_{E} = \mathrm{V_{A}}-4\\V_{J} = \mathrm{V_{A}}-13\\V_{H} = \mathrm{V_{A}}-13\cdot\left( i+1\right)\\V_{D} = \mathrm{V_{A}}-4\\
-          \end{cases}
-          \end{gather*}
-          \par
-
-          \paragraph{} Steps:
-
-          \begin{gather*}
-          \begin{cases}V_{B} = \mathrm{V_{A}}- V2\\[0.7em] V_{D} = \mathrm{V_{A}}- V3\\[0.7em] V_{E} = \mathrm{V_{A}}- V2+ V12\\[0.7em] V_{J} = \mathrm{V_{A}}- V6- V2+ V12\\[0.7em] V_{H} = - V2- V10- V6+\mathrm{V_{A}}+ V12\end{cases}
-          \end{gather*}
-
-          \subsubsection{SNf2}
-
-          \paragraph{} Formed by Nodes: {T, M}
-          \par
-
-          \paragraph{} Equations:
-
-          \begin{gather*}
-          \begin{cases}
-          V_{M} = \mathrm{V_{T}}-1
-          \end{cases}
-          \end{gather*}
-          \par
-
-          \paragraph{} Steps:
-
-          \begin{gather*}
-          \begin{cases}V_{M} = \mathrm{V_{T}}- V11\end{cases}
-          \end{gather*}
-          \par
-
-          \subsection{Grounded}
-          Not found in this circuit.
-
-          \newpage
-          \section{Circuit Currents}
-
-          \subsection{General information}
-
-          \begin{table}[ht]
-          \caption{List of the circuit currents}
-          \centering
-          \begin{tabular}{cccc}
-          \textbf{Reference} & \textbf{Start Node} & \textbf{End Node} & \textbf{Components} \\ \hline
-          I01                & A                   & GND               & V1, L1, V7          \\
-          I02                & GND                 & B                 & R6                  \\
-          I03                & GND                 & H                 & C1, I3, R7          \\
-          I04                & A                   & B                 & V2                  \\
-          I05                & B                   & H                 & R4                  \\
-          I06                & H                   & J                 & V10                 \\
-          I07                & B                   & E                 & V12                 \\
-          I08                & A                   & D                 & V3                  \\
-          I09                & D                   & T                 & R1                  \\
-          I10                & E                   & T                 & R10, C2             \\
-          I11                & T                   & M                 & R2                  \\
-          I12                & J                   & M                 & R3                  \\
-          I13                & D                   & E                 & R9                  \\
-          I14                & E                   & J                 & V6                  \\
-          I15                & T                   & M                 & V11
-          \end{tabular}
-          \end{table}
-
-          \subsection{Equations}
-          Equations using the Kirchhoff Nodes Law (KNL)
-
-          \subsubsection{Node SNf1}
-            \begin{equation}
-              I01+I09+I10+I12=I02+I03
-            \end{equation}
-
-          \subsubsection{Node SNf1}
-            \begin{equation}
-              I09+I10+I12=0
-            \end{equation}
-
-          \newpage
-          \section{Equation System}
-
-          \paragraph{} Equations:
-          \begin{gather*}
-          \begin{cases}\frac{\left(\mathrm{V_{A}}- V1- V7\right)}{ XL1}+\left(\frac{\mathrm{V_{B}}}{ R6}\right)+\frac{\left( V_{D}- V4- V5-\mathrm{V_{T}}\right)}{ R1}+\frac{\left( V_{E}-\mathrm{V_{T}}\right)}{ XC2}+\frac{\left(\mathrm{V_{J}}- V_{M}\right)}{ R3}-0.001 = 0 \\[0.7em] \frac{\left( V_{D}- V4- V5-\mathrm{V_{T}}\right)}{ R1}+\frac{\left( V_{E}-\mathrm{V_{T}}\right)}{ XC2}+\frac{\left(\mathrm{V_{J}}- V_{M}\right)}{ R3} = 0\end{cases}
-          \end{gather*}
-          \par
-
-          \paragraph{} Steps:
-
-          %\hfill\begin{minipage}{\dimexpr\textwidth-1cm}
-          \begin{small}\textbf{\textit{Step 1:}}\end{small}  Reorder current equations
-          \begin{gather*}
-          \begin{cases}I01 - I02 + I09 + I10 + I12 - I03 = 0 \\[0.7em] I09 + I10 + I12 = 0\end{cases}
-          \end{gather*}
-
-          \begin{small}\textbf{\textit{Step 2:}}\end{small}  Substitute the known currents
-          \begin{gather*}
-          \begin{cases}I01 - I02 + I09 + I10 + I12 - 0.001 = 0 \\[0.7em] I09 + I10 + I12 = 0\end{cases}
-          \end{gather*}
-
-          \begin{small}\textbf{\textit{Step 3:}}\end{small}  Compute the remaining currents using Ohm's Law
-          \begin{gather*}
-          \begin{cases}I01 = \frac{\left(\mathrm{V_{A}}- V1 -  V7\right)}{ XL1} \\[0.7em] I02 = -\left(\frac{\mathrm{V_{B}}}{ R6}\right) \\[0.7em] I09 = \frac{\left( V_{D}- V4 -  V5 - \mathrm{V_{T}}\right)}{ R1} \\[0.7em] I10 = \frac{\left( V_{E}-\mathrm{V_{T}}\right)}{ XC2} \\[0.7em] I12 = \frac{\left(\mathrm{V_{J}}- V_{M}\right)}{ R3}\end{cases}
-          \end{gather*}
-
-          \begin{small}\textbf{\textit{Step 4:}}\end{small}  Substitute each current by its equation
-          \begin{gather*}
-          \begin{cases}\frac{\left(\mathrm{V_{A}}- V1- V7\right)}{ XL1}+\left(\frac{\mathrm{V_{B}}}{ R6}\right)+\frac{\left( V_{D}- V4- V5-\mathrm{V_{T}}\right)}{ R1}+\frac{\left( V_{E}-\mathrm{V_{T}}\right)}{ XC2}+\frac{\left(\mathrm{V_{J}}- V_{M}\right)}{ R3}-0.001 = 0 \\[0.7em] \frac{\left( V_{D}- V4- V5-\mathrm{V_{T}}\right)}{ R1}+\frac{\left( V_{E}-\mathrm{V_{T}}\right)}{ XC2}+\frac{\left(\mathrm{V_{J}}- V_{M}\right)}{ R3} = 0\end{cases}
-          \end{gather*}
-
-          \begin{small}\textbf{\textit{Step 5:}}\end{small}  Replace the constants with their value
-          \begin{gather*}
-          \begin{cases}\frac{\mathrm{V_{A}}-11}{\frac{ i\cdot62830}{10000}}+\frac{\mathrm{V_{B}}}{12}+\frac{-8-\mathrm{V_{T}}+ V_{D}}{20}+\frac{ V_{E}-\mathrm{V_{T}}}{\frac{ i\cdot-7.9577\cdot10^{+7}}{5\cdot10^{+5}}}+\frac{\mathrm{V_{J}}- V_{M}}{30}+\frac{-1}{1000} = 0 \\[0.7em] \frac{-8-\mathrm{V_{T}}+ V_{D}}{20}+\frac{ V_{E}-\mathrm{V_{T}}}{\frac{ i\cdot-7.9577\cdot10^{+7}}{5\cdot10^{+5}}}+\frac{\mathrm{V_{J}}- V_{M}}{30} = 0\end{cases}
-          \end{gather*}
-
-          \begin{small}\textbf{\textit{Step 6:}}\end{small} Set a reference for each floating supernode
-          \newline
-          In supernode SNf1 the node A was chosen as a reference. \\
-          In supernode SNf2 the node T was chosen as a reference.
-
-          \newline
-          \begin{footnotesize}
-          \textbf{\textit{Notes:}} \\
-          The voltage of each node from a floating supernode must be expressed as a function of the reference node. \\
-          In the Supernodes section, you can confirm that node equations are already referenced to the chosen node. \\
-          Use these expressions to perform the substitution in the equation system.
-          \end{footnotesize}
-
-
-          %\end{minipage}
-          \par
-
-          \newpage
-
-          \section{Results}
-
-          \subsection{Node Voltages}
-          \begin{gather*}
-          \begin{cases}V_{A} = 9.712-2.461i\;V \\[0.7em] V_{T} = -2.243-1.861i\;V \\[0.7em] V_{B} = 4.712-2.461i\;V \\[0.7em] V_{D} = 5.712-2.461i\;V \\[0.7em] V_{M} = -3.243-1.861i\;V \\[0.7em] V_{E} = 5.712-2.461i\;V \\[0.7em] V_{J} = -3.288-2.461i\;V \\[0.7em] V_{H} = -3.288-15.461i\;V\end{cases}
-          \end{gather*}
-
-          \subsection{Circuit Currents}
-          \begin{gather*}
-          \begin{cases}I03 = 0.001\;A\end{cases}
-          \end{gather*}
-          \begin{footnotesize}
-          \textbf{\textit{Note:}} \\
-          Currents were obtained by an existing current source in their branch.
-          \end{footnotesize}
-
-          \begin{gather*}
-          \begin{cases}I01 = \frac{\mathrm{V_{A}}-11}{\frac{ i\cdot1.256\cdot10^{+7}}{2\cdot10^{+6}}} \\[0.7em] I05 = \frac{\mathrm{V_{B}}-\mathrm{V_{H}}}{10} \\[0.7em] I02 = \frac{\mathrm{V_{B}}\cdot-1}{12} \\[0.7em] I13 = \frac{ V_{D}- V_{E}}{25} \\[0.7em] I09 = \frac{-8-\mathrm{V_{T}}+ V_{D}}{20} \\[0.7em] I10 = \frac{ V_{E}-\mathrm{V_{T}}}{-\left(159.154\cdot i\right)} \\[0.7em] I12 = \frac{\mathrm{V_{J}}- V_{M}}{30} \\[0.7em] I11 = \frac{\mathrm{V_{T}}- V_{M}}{20}\end{cases} \Leftrightarrow\large \begin{cases}I01 = -0.392\;A \\[0.7em] I05 = 0.8\;A \\[0.7em] I02 = -0.393\;A \\[0.7em] I13 = 0\;A \\[0.7em] I09 = -0.002\;A \\[0.7em] I10 = 0.004\;A \\[0.7em] I12 = -0.002\;A \\[0.7em] I11 = 0.05\;A\end{cases}
-          \end{gather*}
-          \begin{footnotesize}
-          \textbf{\textit{Note:}} \\
-          Currents were obtained by their Ohm's Law equation.
-          \end{footnotesize}
-
-          \begin{gather*}
-          \begin{cases}I08 = I13 + I09 \\[0.7em] I06 = I05 + I03 \\[0.7em] I15 = -I12 - I11 \\[0.7em] I04 = -I01 - I08 \\[0.7em] I07 = -I05 + I04 + I02 \\[0.7em] I14 = -I10 + I07 + I13\end{cases} \Leftrightarrow\large \begin{cases}I08 = -0.002\;A \\[0.7em] I06 = 0.801\;A \\[0.7em] I15 = -0.048\;A \\[0.7em] I04 = 0.394\;A \\[0.7em] I07 = -0.799\;A \\[0.7em] I14 = -0.803\;A\end{cases}
-          \end{gather*}
-          \begin{footnotesize}
-          \textbf{\textit{Note:}} \\
-          Currents were obtained by their KNL equation, since they belong to branches with isolated voltage sources.
-          \end{footnotesize}
-
-          \end{document}
-      </textarea>
-
-      <div id="showimg">
-
-      </div>
-
       <script>
 
-        var sendData;
+        // Inject sample tex to latex code text area
+        function parseData(data){
+          $('#latex-code').val(data);
+          $('#latex-code').attr('rows', 20);
+          $('#latex-code').css("background-color", "#ebebeb");
+        }
 
+        $.get("sample.tex",parseData);
+
+        // Circuit image to send
+        var sendData = "";
         var input = document.getElementById("files"),
         output = document.getElementById('output');
 
@@ -350,15 +136,22 @@
         showLoadingIndicator(true);
         window.location.href = "#running";
 
-        //console.log(sendData);
-        var loc = "Page location is " + window.location.href;
-        console.log(loc);
+        var img1 = base64imgselect("img1");
+        var img2 = base64imgselect("img2");
+        var logo = base64imgselect("logo");
 
         var pdftex = new PDFTeX();
 
         pdftex.set_TOTAL_MEMORY(80*1024*1024).then(function() {
 
+          // Add image files
+          if(sendData == "") sendData = base64imgselect("circuit");
+
           pdftex.FS_createLazyFile('/', 'circuit.jpg', sendData, true, true);
+          pdftex.FS_createLazyFile('/', 'snf1.png', img1, true, true);
+          pdftex.FS_createLazyFile('/', 'snf2.png', img2, true, true);
+          pdftex.FS_createLazyFile('/', 'logo.png', logo, true, true);
+
           pdftex.on_stdout = appendOutput;
           pdftex.on_stderr = appendOutput;
 
@@ -380,13 +173,16 @@
         }
 
         document.getElementById("compile").addEventListener("click", function(e) {
-          var source_code = getlatexsample();
-          //var source_code = document.getElementById("input").value;
+          //var source_code = getlatexsample();
+          var source_code = document.getElementById("latex-code").value;
           compile(source_code);
         });
 
         document.getElementById("open_pdf_btn").addEventListener("click", function(e) {
-          window.open(pdf_dataurl);
+          var dlnk = document.getElementById('pdf-file-link');
+          dlnk.href = pdf_dataurl;
+
+          dlnk.click();
           e.preventDefault();
         });
 

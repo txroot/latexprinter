@@ -4,8 +4,9 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel='icon' href='img/favicon.ico' type='image/x-icon' sizes="16x16" />
-    <title>Simple Latex Printer</title>
+    <title>Latex Printer</title>
 
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
     <link href="css/bootstrap.css" rel="stylesheet" media="all">
     <link href="css/main.css" rel="stylesheet" media="all">
 
@@ -17,50 +18,57 @@
 
     <div class="page-wrapper bg-gra-02 p-t-130 p-b-100 font-poppins">
       <div class="wrapper wrapper--w960">
-          <div class="card card-4">
-              <div class="card-body">
-                  <h2 class="title">Latex Printer</h2>
+        <div class="navbar">
+          <img src="img/logow.png" style="width: 250px; float: left; padding-left: 10px; padding-top: 10px;">
+        </div>
+        <div class="card card-4">
 
-                      <div class="row row-space">
-                        <button id="compile" class="btn btn--red btn--radius">Print </button>                
-                        <div class="tab" id="tab_open_pdf" style="display: none">
-                          <h4>Compiled PDF</h4>
-                          <br>
-                          <a id='pdf-file-link' download='compiled_latex.pdf' style="display:none;"></a>
-                          <button class="btn btn--gray btn--radius" id="open_pdf_btn">Download PDF</button>
-                        </div>
-                      </div>
-
-                      <a name="running" id="running" style="display: none">
-                        Compiling…
-                        <img src="img/loading.gif" />
-                      </a>
-
-                      <br>
-
-                      <div class="row row-space">
-                        <div class="input-group">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text input--style-4">Latex Code</span>
-                          </div>
-                          <textarea class="form-control" id="latex-code" aria-label="Latex content"></textarea>
-                        </div>
-                      </div>
-
-                      <div class="row row-space">
-                        <h5>Load circuit image (Optional)</h5>
-                        <br>
-                        <input type="file" id="files" />
-                      </div>
-
-                      <br>
-
-                      <div class="row row-space">
-                        <div id="output" style="background-color:#ffffff; color:#c1c1c1;border-style: dotted; padding: 25px 25px 25px 25px; display:none;"></div>
-                      </div>
-
+          <div class="card-body">
+            <div  class="row row-space">
+              <button id="compile" class="btn btn--red btn--radius" style="font-family:'Helvetica'; font-size:14px; text-align: center;"><i class="fas fa-print"></i>	&nbsp;Print </button>
+              <div class="tab" id="tab_open_pdf" style="display: none; align-items: center;">
+                <a name="open_pdf"></a>
+                <a id='pdf-file-link' download='compiled_latex.pdf' style="display:none;"></a>
+                <button class="btn btn--gray btn--radius" style="font-family:'Helvetica'; font-size:14px; text-align: center;" id="open_pdf_btn"><i class="far fa-file-pdf"></i> 	&nbsp;Download PDF</button>
               </div>
+            </div>
+
+            <a name="running" id="running" style="display: none">
+              <small>Compiling... 	&nbsp;</small>
+              <img src="img/loading.gif" style="width: 100px;"/>
+            </a>
+
+            <br>
+
+            <div class="row row-space">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text input--style-4 " style="font-family:'Helvetica'; font-size:14px;">Latex Code</span>
+                </div>
+                <textarea class="form-control" style="font-family:'Lucida Console'; font-size:12px;" id="latex-code" aria-label="Latex content"></textarea>
+              </div>
+            </div>
+
+            <div class="row row-space">
+              <div style="font-family:'Helvetica'; font-size:12px; text-align: left;">
+                <h5>Load circuit image (Optional)</h5>
+              </div>
+              <input type="file" id="files" style="padding-top: 10px;;"/>
+
+            </div>
+
+            <br>
+
+            <div class="row row-space">
+              <div id="output" style="font-size:12px; text-align: justify; background-color:#ffffff; color:#616161; border-width:1px; border-style:solid; padding: 25px 25px 25px 25px; display:none;"></div>
+            </div>
+
           </div>
+        </div>
+        <div>
+           <span style="float: right; text-align: right; color: #ffffff; padding-right: 10px; padding-top: 10px;"><i class="fab fa-github"></i><small><i> maintained by <a href="https://github.com/txroot/latexprinter" style="color: white; text-decoration: none;"></small><b>txr</b></i></a></span>
+          <span></span>
+        </div>
       </div>
   </div>
 
@@ -167,6 +175,7 @@
 
             showOpenButton(true);
             window.location.href = "#open_pdf";
+            document.documentElement.scrollTop = 0;
             document.getElementById("open_pdf_btn").focus();
             });
           });
@@ -176,6 +185,8 @@
           //var source_code = getlatexsample();
           var source_code = document.getElementById("latex-code").value;
           compile(source_code);
+          $('#output').show();
+          $('#output').append("<div><small><b>Debug Output:</b></small><br></div>");
         });
 
         document.getElementById("open_pdf_btn").addEventListener("click", function(e) {

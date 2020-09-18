@@ -24,9 +24,20 @@ class latexprinter{
         },
         this.print = function(texSourceFile) {
             let errorCode = 0;
+            let pdf_dataurl = undefined;
+
             if(latexCode == null) errorCode = -1;
             else {
+              console.time("Execution time");
+              pdftex.set_TOTAL_MEMORY(80*1024*1024).then(function() {
+                pdftex.compile(source_code).then(function(pdf_dataurl) {
                 
+                console.timeEnd("Execution time");
+    
+                if (pdf_dataurl === false) errorCode = -2;
+                return;
+                });                
+              });
             }
 
             return {
@@ -39,7 +50,7 @@ class latexprinter{
     init (filename, base64img) {
         // Code to do initializations
         
-    };        
+    };    
 };
 
 var PDFTeX = function(opt_workerPath) {

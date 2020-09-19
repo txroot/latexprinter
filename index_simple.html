@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Latex Printer Basic Example</title>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/latexprinter.js"></script>
+
+  </head>
+
+  <body>
+
+
+    <h5>Load an image</h5>
+    <input type="file" id="files"/>
+    <hr>
+    <button id="compile"> Print </button>
+
+      <script src="vendor/promisejs/promise.js"></script>
+      <script src="vendor/pdftex/pdftex.js"></script>
+      <script src="js/base64data.js"></script>
+      <script src="js/latexsample.js"></script>
+
+<script>
+  // Variable to save a base64 image
+  var sampleimg = "";
+
+  // Create an object of the document to print
+  var docToPrint = new latexprinter();
+
+  // Get file from filereader as dataURL
+  function getFileUrl() {
+          var preview = document.querySelector('img');
+          var file    = document.querySelector('input[type=file]').files[0];
+          var reader  = new FileReader();
+
+          reader.addEventListener("load", function () {
+            //preview.src = reader.result;
+            sendData = reader.result;
+          }, false);
+
+          if (file) {
+            reader.readAsDataURL(file);
+          }
+  }
+
+  // Event listener for file input.
+  input.addEventListener('change', getFileUrl, false);
+
+  // Add image files
+  if(sendData == "") sendData = base64imgselect("circuit");
+
+  window.open(url, "_blank");
+</script>
+
+      <script>
+
+        // Inject sample tex to latex code text area
+        function parseData(data){
+          $('#latex-code').val(data);
+          $('#latex-code').attr('rows', 20);
+          $('#latex-code').css("background-color", "#ebebeb");
+        }
+
+        $.get("sample.tex",parseData);
+
+        // Circuit image to send
+        var sendData = "";
+        var input = document.getElementById("files"),
+        output = document.getElementById('output');
+
+        function getFileUrl() {
+          var preview = document.querySelector('img');
+          var file    = document.querySelector('input[type=file]').files[0];
+          var reader  = new FileReader();
+
+          reader.addEventListener("load", function () {
+            //preview.src = reader.result;
+            sendData = reader.result;
+          }, false);
+
+          if (file) {
+            reader.readAsDataURL(file);
+          }
+        }
+
+        // Eventlistener for file input.
+        input.addEventListener('change', getFileUrl, false);
+
+        var visibilityChanger = function(element_id) {
+          return function(visible) {
+            document.getElementById(element_id).style.display = visible ? 'block' : 'none';
+          }
+        }
+
+        var showLoadingIndicator = visibilityChanger("running")
+        var showOpenButton = visibilityChanger("tab_open_pdf")
+
+        var appendOutput = function(msg) {
+          var output = document.getElementById("output");
+
+          var content = output.textContent;
+
+          output.textContent = content + "\r\n" + msg;
+
+          output.scrollTop = 999999;
+          console.log(msg);
+        }
+
+        var pdf_dataurl = undefined;
+        var compile = function(source_code) {
+        document.getElementById("output").textContent = "";
+        showLoadingIndicator(true);
+        window.location.href = "#running";
+
+        var img1 = base64imgselect("img1");
+        var img2 = base64imgselect("img2");
+        var logo = base64imgselect("logo");
+
+        var pdftex = new PDFTeX();
+
+        pdftex.set_TOTAL_MEMORY(80*1024*1024).then(function() {
+
+          // Add image files
+          if(sendData == "") sendData = base64imgselect("circuit");
+
+          pdftex.FS_createLazyFile('/', 'circuit.jpg', sendData, true, true);
+          pdftex.FS_createLazyFile('/', 'snf1.png', img1, true, true);
+          pdftex.FS_createLazyFile('/', 'snf2.png', img2, true, true);
+          pdftex.FS_createLazyFile('/', 'logo.png', logo, true, true);
+
+          pdftex.on_stdout = appendOutput;
+          pdftex.on_stderr = appendOutput;
+
+          console.time("Execution time");
+
+          pdftex.compile(source_code).then(function(pdf_dataurl) {
+            console.timeEnd("Execution time");
+
+            showLoadingIndicator(false);
+
+            if (pdf_dataurl === false)
+              return;
+
+            showOpenButton(true);
+            window.location.href = "#open_pdf";
+            document.documentElement.scrollTop = 0;
+            document.getElementById("open_pdf_btn").focus();
+            });
+          });
+        }
+
+        document.getElementById("compile").addEventListener("click", function(e) {
+          //var source_code = getlatexsample();
+          var source_code = document.getElementById("latex-code").value;
+          compile(source_code);
+          $('#output').show();
+          $('#output').append("<div><small><b>Debug Output:</b></small><br></div>");
+        });
+
+        document.getElementById("open_pdf_btn").addEventListener("click", function(e) {
+          var dlnk = document.getElementById('pdf-file-link');
+          dlnk.href = pdf_dataurl;
+
+          dlnk.click();
+          e.preventDefault();
+        });
+
+        //var pdftex_preload = new PDFTeX("vendor/pdftex/pdftex-full-worker.js");
+        //pdftex_preload = undefined;
+    </script>
+  </body>
+</html>

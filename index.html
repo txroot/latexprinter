@@ -141,43 +141,43 @@
 
         var pdf_dataurl = undefined;
         var compile = function(source_code) {
-        document.getElementById("output").textContent = "";
-        showLoadingIndicator(true);
-        window.location.href = "#running";
+          document.getElementById("output").textContent = "";
+          showLoadingIndicator(true);
+          window.location.href = "#running";
 
-        var img1 = base64imgselect("img1");
-        var img2 = base64imgselect("img2");
-        var logo = base64imgselect("logo");
+          var img1 = base64imgselect("img1");
+          var img2 = base64imgselect("img2");
+          var logo = base64imgselect("logo");
 
-        var pdftex = new PDFTeX();
+          var pdftex = new PDFTeX();
 
-        pdftex.set_TOTAL_MEMORY(80*1024*1024).then(function() {
+          pdftex.set_TOTAL_MEMORY(80*1024*1024).then(function() {
 
-          // Add image files
-          if(sendData == "") sendData = base64imgselect("circuit");
+            // Add image files
+            if(sendData == "") sendData = base64imgselect("circuit");
 
-          pdftex.FS_createLazyFile('/', 'circuit.jpg', sendData, true, true);
-          pdftex.FS_createLazyFile('/', 'snf1.png', img1, true, true);
-          pdftex.FS_createLazyFile('/', 'snf2.png', img2, true, true);
-          pdftex.FS_createLazyFile('/', 'logo.png', logo, true, true);
+            pdftex.FS_createLazyFile('/', 'circuit.jpg', sendData, true, true);
+            pdftex.FS_createLazyFile('/', 'snf1.png', img1, true, true);
+            pdftex.FS_createLazyFile('/', 'snf2.png', img2, true, true);
+            pdftex.FS_createLazyFile('/', 'logo.png', logo, true, true);
 
-          pdftex.on_stdout = appendOutput;
-          pdftex.on_stderr = appendOutput;
+            pdftex.on_stdout = appendOutput;
+            pdftex.on_stderr = appendOutput;
 
-          console.time("Execution time");
+            console.time("Execution time");
 
-          pdftex.compile(source_code).then(function(pdf_dataurl) {
-            console.timeEnd("Execution time");
+            pdftex.compile(source_code).then(function(pdf_dataurl) {
+              console.timeEnd("Execution time");
 
-            showLoadingIndicator(false);
+              showLoadingIndicator(false);
 
-            if (pdf_dataurl === false)
-              return;
+              if (pdf_dataurl === false)
+                return;
 
-            showOpenButton(true);
-            window.location.href = "#open_pdf";
-            document.documentElement.scrollTop = 0;
-            document.getElementById("open_pdf_btn").focus();
+              showOpenButton(true);
+              window.location.href = "#open_pdf";
+              document.documentElement.scrollTop = 0;
+              document.getElementById("open_pdf_btn").focus();
             });
           });
         }

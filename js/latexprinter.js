@@ -2,61 +2,86 @@
  * Author : André Rocha
  * Email : anr@isep.ipp.pt
  * Source : https://github.com/txroot/latexprinter
-*/
+ *
+ * Thanks to Manuels from:
+ * https://github.com/manuels/texlive.js/
+ * texlive.js is a port of TeX live 2016 to Javascript
+ */
 
 /**
-* LatexPrinter function
-* @param {int} printerId   Id of the printer (optional)
-* @returns {string}    Return a Prettified Number
+* LatexPrinter Prototype
+* @param {int} printerId    Id of the printer (optional)
+* @param {string} targetLnk link dom object ID
+* @param {string} targetBtn button dom object ID
 */
 
+function processItem(imgArray, latexCode, link, button){
+  var texpdf = new PDFTeX();
+  var targetLnk = document.getElementById(link);
+  var targetBtn = document.getElementById(button);
+  console.time("Execution time");
+  targetBtn.innerHTML= 'Processing';
+  texpdf.set_TOTAL_MEMORY(80*1024*1024).then(function() {
+    console.log("IMG Array Size: " + imgArray.length);
+    for (let i = 0; i < imgArray.length; i++) {
+      console.log("Filename: " + imgArray[i].filename);
+      console.log("Base64: " + imgArray[i].base64img);
+      texpdf.FS_createLazyFile('/', imgArray[i].filename, imgArray[i].base64img, true, true);
+    }
+    texpdf.compile(latexCode).then(function(pdf_dataurl) {
+
+        console.timeEnd("Execution time");
+        var errorCode;
+        if (pdf_dataurl === false) errorCode = -2;
+        console.log("errorCode: " + errorCode);
+        console.log("dataURL: " + pdf_dataurl);
+        targetLnk.href = pdf_dataurl;
+
+        targetLnk.click();
+        targetBtn.innerHTML= 'Print';
+    });
+  });
+}
+
 class latexprinter{
-    constructor(printerId) {
+    constructor(printerId, targetLnk, targetBtn) {
         this.id = printerId || null,
         this.latexCode = null,
         this.texpdf = new PDFTeX(),
+        this.jobState = -1;
+        this.imgArr = new Array(),
+        this.targetLnk = targetLnk,
+        this.targetBtn = targetBtn,
+        this.result = {
+          errorCode: -3,
+          pdfDataUrl: null
+        },
         this.addTexFile = function(texSourceFile) {
             // Code do add image file
             this.latexCode = texSourceFile;
         },
         this.addImgFile = function(filename, base64img) {
             // Code do add image file
-            texpdf.FS_createLazyFile('/', filename, base64img, true, true);
+          this.imgArr.push({filename, base64img});
         },
         this.print = function() {
-            let errorCode = 0;
-            let pdf_dataurl = undefined;
+          let errorCode = 0;
+          let pdf_dataurl = "";
 
-            if(latexCode == null) errorCode = -1;
-            else {
-              console.time("Execution time");
-              texpdf.set_TOTAL_MEMORY(80*1024*1024).then(function() {
-                texpdf.compile(source_code).then(function(pdf_dataurl) {
+          if(this.latexCode == null) errorCode = -1;
+          else {
 
-                console.timeEnd("Execution time");
+            processItem(this.imgArr, this.latexCode, this.targetLnk, this.targetBtn);
+          }
 
-                if (pdf_dataurl === false) errorCode = -2;
-                return;
-                });
-              });
-            }
-
-            return {
-                errorCode:  errorCode,
-                pdfDataUrl: pdf_dataurl
-            };
-        },
-        this.init();
-    };
-    init (filename, base64img) {
-        // Code to do initializations
-
+          this.result.errorCode = errorCode;
+        }
     };
 };
 
 var PDFTeX = function(opt_workerPath) {
     if (!opt_workerPath) {
-      opt_workerPath = 'vendor/pdftex/pdftex-full-worker.js';
+      opt_workerPath = './texworker.js';
     }
 
     var worker = new Worker(opt_workerPath);
@@ -215,7 +240,6 @@ var PDFTeX = function(opt_workerPath) {
         return sendCommand({
           'command': 'run',
           'arguments': ['-interaction=nonstopmode', '-output-format', 'pdf', 'input.tex'],
-  //        'arguments': ['-debug-format', '-output-format', 'pdf', '&latex', 'input.tex'],
         });
       };
 

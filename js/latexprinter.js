@@ -81,7 +81,7 @@ class latexprinter{
 
 var PDFTeX = function(opt_workerPath) {
     if (!opt_workerPath) {
-      opt_workerPath = './texworker.js';
+      opt_workerPath = 'vendor/pdftex/pdftex-full-worker.js';
     }
 
     var worker = new Worker(opt_workerPath);
